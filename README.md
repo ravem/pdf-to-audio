@@ -8,7 +8,8 @@ Lo script include **pause dinamiche tra paragrafi** e **micro-pause dopo la punt
 - Estrazione automatica del testo dai file `.pdf`.  
 - Conversione del testo in voce italiana tramite `edge-TTS`.  
 - Lettura naturale con pause dinamiche e micro-pause integrate.  
-- Velocità di lettura regolabile (parametro `rate`).  
+- Velocità di lettura regolabile (parametro `rate`).
+- Lo script è pensato per determinare la lingua prevalente del testo basandosi sui primi 1000 caratteri, e in base a quanto rilevato sarà scelta la lingua per la lettura e trasformazione in audio
 
 ## Requisiti
 
