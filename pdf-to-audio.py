@@ -1,6 +1,7 @@
 import asyncio
 import edge_tts
 import fitz  # PyMuPDF
+from langdetect import detect
 
 def pdf_to_text(pdf_file):
     """Estrae tutto il testo da un file PDF, aggiungendo micro-pause e pause tra paragrafi."""
@@ -22,6 +23,23 @@ def pdf_to_text(pdf_file):
                         text += line + '\n\n\n'
     return text.strip()
 
+def detect_language(text):
+    """Tenta di rilevare la lingua del testo e restituisce la voce corretta per edge-tts."""
+    try:
+        lang = detect(text[:1000])
+    except Exception:
+        lang = "it"  # fallback
+    voices = {
+        "it": "it-IT-IsabellaNeural",
+        "en": "en-GB-LibbyNeural",
+        "fr": "fr-FR-DeniseNeural",
+        "es": "es-ES-ElviraNeural",
+        "de": "de-DE-KatjaNeural"
+    }
+    voice = voices.get(lang, "it-IT-IsabellaNeural")
+    print(f"🌍 Lingua rilevata: {lang} → Voce: {voice}")
+    return voice
+
 async def text_to_speech_edge(text, output_file, voice="it-IT-IsabellaNeural", rate="+0%"):
     """Usa edge-tts per creare il file MP3."""
     communicate = edge_tts.Communicate(text, voice=voice, rate=rate)
@@ -32,5 +50,5 @@ if __name__ == "__main__":
     pdf_file = "1.pdf"
     output_file = "1.mp3"
     text_content = pdf_to_text(pdf_file)
-    # Esegui l’async
-    asyncio.run(text_to_speech_edge(text_content, output_file, voice="it-IT-IsabellaNeural", rate="+10%"))
+    voice = detect_language(text_content)
+    asyncio.run(text_to_speech_edge(text_content, output_file, voice=voice, rate="+10%"))
